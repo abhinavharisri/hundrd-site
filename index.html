@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hundrd — web studio, Bengaluru</title>
+<meta name="description" content="hundrd is a web studio in Bengaluru building fast, secure websites for businesses that operate at scale. Designed, built and hosted by one studio.">
+<meta name="theme-color" content="#F5F3EE">
+<link rel="canonical" href="https://hundrd.studio/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hundrd.studio/">
+<meta property="og:title" content="hundrd — web studio, Bengaluru">
+<meta property="og:description" content="Fast, secure websites for businesses that operate at scale, down to the hundredth detail.">
+<meta property="og:image" content="https://hundrd.studio/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/Geist-Medium.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Geist";src:url(fonts/Geist-Regular.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Geist";src:url(fonts/Geist-Medium.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"Geist";src:url(fonts/Geist-SemiBold.woff2) format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(fonts/GeistMono-Regular.woff2) format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(fonts/GeistMono-Medium.woff2) format("woff2");font-weight:500;font-style:normal;font-display:swap}
+:root{--surface:#F5F3EE;--surface-raised:#FFFFFF;--surface-sunk:#EBE8E1;--line:#DCD8CF;--line-strong:#151412;--ink:#151412;--ink-muted:#625E57;--signal:#FF4A1C;--signal-ink:#B3340C;--on-signal:#151412;--ok:#2C6A38;--font-sans:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--font-mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace;--ease:cubic-bezier(.2,.7,.1,1);--ease-io:cubic-bezier(.7,0,.2,1)}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--surface);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
+::selection{background:var(--signal);color:var(--on-signal)}
+a{color:var(--ink);text-decoration:none}
+a:hover{color:var(--signal-ink)}
+
+/* load-in */
+@keyframes hdUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@keyframes hdDown{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:none}}
+@keyframes hdClip{from{clip-path:inset(0 0 100% 0);transform:translateY(40%)}to{clip-path:inset(0 0 0 0);transform:none}}
+@keyframes hdBlink{0%,55%{opacity:1}56%,100%{opacity:0}}
+@keyframes hdFade{from{opacity:0}to{opacity:1}}
+.hd-in{animation:hdUp 1s var(--ease) both}
+.hd-head{animation:hdDown .9s var(--ease) both}
+.hd-clip{display:inline-block;animation:hdClip 1.3s var(--ease-io) both}
+.hd-blink{animation:hdBlink 1.1s steps(1) infinite 2.2s}
+
+/* scroll reveals (progressive: browsers without scroll timelines just show everything) */
+@keyframes hdRise{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes hdGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@supports (animation-timeline: view()){
+  .rv{animation:hdRise linear both;animation-timeline:view();animation-range:entry 5% entry 45%}
+  .hd-rail-fill{animation:hdGrow linear both;animation-timeline:view();animation-range:cover 15% cover 55%}
+}
+
+/* nav */
+.hd-link{position:relative;padding:6px 0}
+.hd-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+.hd-link:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* buttons */
+.hd-btn{transition:background-color .35s var(--ease),border-color .35s var(--ease),color .35s var(--ease),transform .35s var(--ease)}
+.hd-btn:hover{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.hd-btn:active{transform:scale(.98)}
+.hd-btn .hd-arr{display:inline-block;transition:transform .45s var(--ease)}
+.hd-btn:hover .hd-arr{transform:translateX(4px)}
+.hd-btn:focus-visible,.hd-field:focus-visible,.hd-cube:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+
+/* hero cube */
+.hd-cube{cursor:grab;touch-action:pan-y;animation:hdFade 1.2s var(--ease) both}
+.hd-cube:active{cursor:grabbing}
+
+/* scroll cue: the arrow's pixels light up top to bottom, ending on the vermilion tip */
+@keyframes hdPix{0%,100%{opacity:.14}25%{opacity:1}55%{opacity:.14}}
+.hd-pix{animation:hdPix 1.8s var(--ease) infinite}
+.hd-cue svg{transition:transform .5s var(--ease)}
+.hd-cue:hover svg{transform:translateY(6px)}
+
+/* work cards */
+.hd-shot{position:relative;overflow:hidden;transition:border-color .5s var(--ease)}
+.hd-shot-in{transition:transform 1.1s var(--ease)}
+.hd-card:hover .hd-shot{border-color:var(--ink)}
+.hd-card:hover .hd-shot-in{transform:scale(1.045)}
+.hd-walk{position:absolute;top:0;left:0;width:100%;height:auto;display:block;will-change:transform;animation:hdWalk 28s linear infinite;animation-delay:var(--delay,0s)}
+.hd-card:hover .hd-walk{animation-play-state:paused}
+@keyframes hdWalk{
+  0%{transform:translateY(0);animation-timing-function:linear}
+  16%{transform:translateY(0);animation-timing-function:cubic-bezier(.5,0,.6,1)}
+  48%{transform:translateY(calc(var(--end) * .24));animation-timing-function:cubic-bezier(.4,0,.6,1)}
+  76%{transform:translateY(var(--end));animation-timing-function:linear}
+  80%{transform:translateY(var(--end));animation-timing-function:cubic-bezier(.65,0,.35,1)}
+  89%,100%{transform:translateY(0)}
+}
+.hd-visit{position:absolute;right:16px;bottom:16px;opacity:0;transform:translateY(12px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.hd-card:hover .hd-visit,.hd-card:focus-within .hd-visit{opacity:1;transform:none}
+.hd-card h3 .hd-arr{display:inline-block;opacity:0;transform:translate(-6px,6px);transition:opacity .4s var(--ease),transform .4s var(--ease);color:var(--signal-ink)}
+.hd-card:hover h3 .hd-arr{opacity:1;transform:none}
+.hd-ph{background-color:var(--surface-sunk);background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:24px 24px;background-position:-1px -1px}
+
+/* services */
+.hd-svc{position:relative;transition:background-color .5s var(--ease)}
+.hd-svc::before{content:"";position:absolute;left:0;right:0;top:-1px;height:2px;background:var(--signal);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease)}
+.hd-svc:hover{background:#1C1B19}
+.hd-svc:hover::before{transform:scaleX(1)}
+.hd-svc h3,.hd-svc p{transition:transform .6s var(--ease)}
+.hd-svc:hover h3{transform:translateX(8px)}
+
+/* process */
+.hd-step{position:relative;transition:transform .6s var(--ease)}
+.hd-step::after{content:"";position:absolute;left:0;right:0;top:-2px;height:2px;background:var(--signal);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease)}
+.hd-step:hover{transform:translateY(-4px)}
+.hd-step:hover::after{transform:scaleX(1)}
+
+/* form */
+.hd-field{font:inherit;font-size:16px;color:var(--ink);background:var(--surface-raised);border:1px solid var(--line);border-radius:0;padding:12px 14px;min-height:48px;box-sizing:border-box;width:100%;transition:border-color .3s var(--ease)}
+.hd-field:hover{border-color:#B9B4AA}
+.hd-field:focus{border-color:var(--ink)}
+.hd-field::placeholder{color:#8A857C}
+[hidden]{display:none!important}
+.hd-ok{animation:hdUp .7s var(--ease) both}
+
+@media (max-width: 720px){
+  .hd-navlinks .hd-link{display:none}
+  .hd-navlinks .hd-btn{height:36px!important;padding:0 12px!important;font-size:14px}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div style="min-height: 100vh; background: var(--surface); color: var(--ink); font-family: var(--font-sans);">
+
+  <!-- NAV -->
+  <header class="hd-head" style="position: sticky; top: 0; z-index: 10; background: rgba(245, 243, 238, 0.86); backdrop-filter: blur(10px) saturate(1.2); -webkit-backdrop-filter: blur(10px) saturate(1.2); border-bottom: 1px solid var(--line);">
+    <nav aria-label="Main" style="max-width: 1280px; margin: 0 auto; padding: 0 24px; height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+      <a href="#top" style="display: inline-flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 600; letter-spacing: -0.04em; line-height: 1;">
+        <svg viewBox="0 0 96 96" width="24" height="24" aria-hidden="true"><defs><pattern id="hd-px-nav" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#151412"></rect></pattern></defs><rect width="96" height="96" fill="url(#hd-px-nav)"></rect><rect x="90" y="90" width="6" height="6" fill="#FF4A1C"></rect></svg>
+        <span>hundrd</span>
+      </a>
+      <div class="hd-navlinks" style="display: flex; align-items: center; gap: 28px; flex-wrap: wrap; font-size: 15px;">
+        <a class="hd-link" href="#work">Work</a>
+        <a class="hd-link" href="#services">Services</a>
+        <a class="hd-link" href="#process">Process</a>
+        <a class="hd-link" href="#studio">Studio</a>
+        <a class="hd-btn" href="#contact" style="display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; background: var(--signal); border: 1px solid var(--signal); color: var(--on-signal); border-radius: 2px; font-weight: 500;">Start a project <span class="hd-arr" style="font-family: var(--font-mono);">→</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section aria-labelledby="hero-title" style="max-width: 1280px; margin: 0 auto; padding: 48px 24px 56px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+      <canvas id="cube" class="hd-cube" tabindex="0" role="img" aria-label="The hundrd mark as a rotating cube of pixels. Drag to spin, click or press Enter to scatter it." style="width: min(520px, 86vw); aspect-ratio: 1 / 1; display: block;"></canvas>
+      <p class="hd-in" style="margin: 4px 0 0; animation-delay: 1.4s; font-family: var(--font-mono); font-size: 11px; line-height: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Drag to spin · Click to scatter</p>
+      <p class="hd-in" style="margin: 36px 0 0; animation-delay: 0.2s; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Web studio · Bengaluru · 100% or nothing</p>
+      <h1 id="hero-title" style="margin: 16px 0 0; overflow: hidden; padding-bottom: 0.06em; font-size: clamp(64px, 11vw, 140px); line-height: 0.92; font-weight: 500; letter-spacing: -0.055em;"><span class="hd-clip" style="animation-delay: 0.35s;">hundrd<span class="hd-blink" style="color: var(--signal);">.</span></span></h1>
+      <p class="hd-in" style="margin: 28px 0 0; animation-delay: 0.7s; max-width: 560px; font-size: 20px; line-height: 1.5; color: var(--ink-muted);">Fast, secure websites for businesses that operate at scale. Designed, built and hosted by one studio, down to the hundredth detail.</p>
+      <div class="hd-in" style="margin-top: 40px; animation-delay: 0.9s; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <a class="hd-btn" href="#contact" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 24px; background: var(--signal); border: 1px solid var(--signal); color: var(--on-signal); border-radius: 2px; font-size: 16px; font-weight: 500;">Start a project <span class="hd-arr" style="font-family: var(--font-mono);">→</span></a>
+        <a class="hd-btn" href="#work" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 24px; background: transparent; border: 1px solid var(--ink); color: var(--ink); border-radius: 2px; font-size: 16px; font-weight: 500;">See the work <span class="hd-arr" style="font-family: var(--font-mono);">↓</span></a>
+      </div>
+    </section>
+
+    <!-- SCROLL CUE -->
+    <div class="hd-in" style="animation-delay: 1.6s; display: flex; justify-content: center; padding: 8px 24px 72px;">
+      <a class="hd-cue" href="#work" aria-label="Scroll to the work" style="display: inline-flex; flex-direction: column; align-items: center; gap: 14px; padding: 12px;">
+        <svg viewBox="0 0 46 56" width="46" height="56" aria-hidden="true"><rect class="hd-pix" x="20" y="0" width="6" height="6" fill="#151412" style="animation-delay: 0.00s;"></rect><rect class="hd-pix" x="20" y="10" width="6" height="6" fill="#151412" style="animation-delay: 0.12s;"></rect><rect class="hd-pix" x="20" y="20" width="6" height="6" fill="#151412" style="animation-delay: 0.24s;"></rect><rect class="hd-pix" x="0" y="30" width="6" height="6" fill="#151412" style="animation-delay: 0.36s;"></rect><rect class="hd-pix" x="20" y="30" width="6" height="6" fill="#151412" style="animation-delay: 0.36s;"></rect><rect class="hd-pix" x="40" y="30" width="6" height="6" fill="#151412" style="animation-delay: 0.36s;"></rect><rect class="hd-pix" x="10" y="40" width="6" height="6" fill="#151412" style="animation-delay: 0.48s;"></rect><rect class="hd-pix" x="20" y="40" width="6" height="6" fill="#151412" style="animation-delay: 0.48s;"></rect><rect class="hd-pix" x="30" y="40" width="6" height="6" fill="#151412" style="animation-delay: 0.48s;"></rect><rect class="hd-pix" x="20" y="50" width="6" height="6" fill="#FF4A1C" style="animation-delay: 0.60s;"></rect></svg>
+        <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted);">Scroll</span>
+      </a>
+    </div>
+
+    <!-- WORK -->
+    <section id="work" aria-labelledby="work-title" style="border-top: 1px solid var(--line);">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 104px 24px;">
+        <div class="rv" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap;">
+          <div>
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">01 / Selected work</p>
+            <h2 id="work-title" style="margin: 12px 0 0; font-size: clamp(36px, 5vw, 56px); line-height: 1; font-weight: 500; letter-spacing: -0.035em;">Built and running.</h2>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px; text-align: right;">
+            <p id="live-count" hidden style="margin: 0; display: flex; align-items: baseline; gap: 10px;"><span id="live-num" style="font-family: var(--font-mono); font-size: 48px; line-height: 1; font-weight: 500; letter-spacing: -0.03em; font-variant-numeric: tabular-nums;"></span><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Sites live</span></p>
+            <p style="margin: 0; max-width: 380px; font-size: 16px; line-height: 1.6; color: var(--ink-muted);">Every site below is live, hosted and maintained by hundrd.</p>
+          </div>
+        </div>
+
+        <div id="work-grid" style="margin-top: 56px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 64px 24px;"></div>
+
+        <div class="rv" style="margin-top: 64px; padding: 20px 24px; border: 1px dashed var(--line); display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <span class="hd-blink" style="width: 8px; height: 8px; background: var(--signal);"></span>
+          <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">In build</span>
+          <span style="font-size: 16px;">A new build is underway. Yours could be next.</span>
+          <a class="hd-btn" href="#contact" style="margin-left: auto; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; background: var(--signal); border: 1px solid var(--signal); color: var(--on-signal); border-radius: 2px; font-size: 15px; font-weight: 500;">Start your project <span class="hd-arr" style="font-family: var(--font-mono);">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" aria-labelledby="services-title" style="background: var(--ink); color: var(--surface);">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 104px 24px;">
+        <div class="rv">
+          <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #A39E94;">02 / Services</p>
+          <h2 id="services-title" style="margin: 12px 0 0; max-width: 760px; font-size: clamp(36px, 5vw, 56px); line-height: 1; font-weight: 500; letter-spacing: -0.035em;">One studio, from the first sketch to the server.</h2>
+        </div>
+        <div style="margin-top: 64px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); border-top: 1px solid #3A3833;">
+          <div class="hd-svc rv" style="padding: 28px 24px 32px 16px; border-bottom: 1px solid #3A3833;">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 13px; color: #FF7D57;">01</p>
+            <h3 style="margin: 16px 0 0; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -0.015em;">Design &amp; build</h3>
+            <p style="margin: 10px 0 0; font-size: 15px; line-height: 1.6; color: #A39E94;">Custom sites written by hand, not templates: catalogues, booking flows, enquiry carts.</p>
+          </div>
+          <div class="hd-svc rv" style="padding: 28px 24px 32px 16px; border-bottom: 1px solid #3A3833;">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 13px; color: #FF7D57;">02</p>
+            <h3 style="margin: 16px 0 0; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -0.015em;">Hosting &amp; deployment</h3>
+            <p style="margin: 10px 0 0; font-size: 15px; line-height: 1.6; color: #A39E94;">Domains, DNS, SSL and Git-based deploys on Cloudflare, Vercel or your own server.</p>
+          </div>
+          <div class="hd-svc rv" style="padding: 28px 24px 32px 16px; border-bottom: 1px solid #3A3833;">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 13px; color: #FF7D57;">03</p>
+            <h3 style="margin: 16px 0 0; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -0.015em;">Security by default</h3>
+            <p style="margin: 10px 0 0; font-size: 15px; line-height: 1.6; color: #A39E94;">Built by a cybersecurity engineer: no exposed files, correct headers, nothing left open.</p>
+          </div>
+          <div class="hd-svc rv" style="padding: 28px 24px 32px 16px; border-bottom: 1px solid #3A3833;">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 13px; color: #FF7D57;">04</p>
+            <h3 style="margin: 16px 0 0; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -0.015em;">Care &amp; print</h3>
+            <p style="margin: 10px 0 0; font-size: 15px; line-height: 1.6; color: #A39E94;">Ongoing updates after launch, plus print pieces that match the site.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section id="process" aria-labelledby="process-title">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 104px 24px;">
+        <div class="rv">
+          <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">03 / Process</p>
+          <h2 id="process-title" style="margin: 12px 0 0; font-size: clamp(36px, 5vw, 56px); line-height: 1; font-weight: 500; letter-spacing: -0.035em;">Four steps. No surprises.</h2>
+        </div>
+        <div aria-hidden="true" style="margin-top: 56px; height: 2px; background: var(--line); overflow: hidden;">
+          <div class="hd-rail-fill" style="height: 2px; background: var(--signal); transform-origin: left;"></div>
+        </div>
+        <ol style="margin: 32px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 24px;">
+          <li class="hd-step rv" style="border-top: 2px solid var(--ink); padding-top: 20px;">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Step 01</p>
+            <h3 style="margin: 12px 0 0; font-size: 22px; font-weight: 500; letter-spacing: -0.015em;">Discover</h3>
+            <p style="margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: var(--ink-muted);">A call to understand the business, the customers and what the site must do. You get a written quotation.</p>
+          </li>
+          <li class="hd-step rv" style="border-top: 2px solid var(--ink); padding-top: 20px;">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Step 02</p>
+            <h3 style="margin: 12px 0 0; font-size: 22px; font-weight: 500; letter-spacing: -0.015em;">Design</h3>
+            <p style="margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: var(--ink-muted);">Page layouts you can click through before a line of production code is written.</p>
+          </li>
+          <li class="hd-step rv" style="border-top: 2px solid var(--ink); padding-top: 20px;">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Step 03</p>
+            <h3 style="margin: 12px 0 0; font-size: 22px; font-weight: 500; letter-spacing: -0.015em;">Build</h3>
+            <p style="margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: var(--ink-muted);">Hand-written, fast, tested on real phones, with your content and images optimised.</p>
+          </li>
+          <li class="hd-step rv" style="border-top: 2px solid var(--signal); padding-top: 20px;">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--signal-ink);">Step 04</p>
+            <h3 style="margin: 12px 0 0; font-size: 22px; font-weight: 500; letter-spacing: -0.015em;">Launch</h3>
+            <p style="margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: var(--ink-muted);">Deployed, secured and handed over, with hosting and care to keep it running.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- STUDIO -->
+    <section id="studio" aria-labelledby="studio-title" style="border-top: 1px solid var(--line);">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 104px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 40px 56px; align-items: start;">
+        <div class="rv">
+          <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">04 / Studio</p>
+          <h2 id="studio-title" style="margin: 12px 0 0; font-size: clamp(36px, 5vw, 56px); line-height: 1; font-weight: 500; letter-spacing: -0.035em;">Small studio.<br>High standards.</h2>
+        </div>
+        <div class="rv">
+          <p style="margin: 0; font-size: 24px; line-height: 1.4; letter-spacing: -0.015em;">hundrd is run by Abhinav Harisri, with one simple goal: websites that stand comfortably next to work from much bigger studios.</p>
+          <p style="margin: 20px 0 0; font-size: 16px; line-height: 1.6; color: var(--ink-muted);">Every site is built like a vault: beautiful on the outside, engineered so nothing gets in. One person writes every line, ships every deploy and answers every message, with the same obsessive care on the hundredth detail as on the first.</p>
+          <ul style="margin: 32px 0 0; padding: 20px 0 0; list-style: none; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 14px 36px;">
+            <li style="display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;"><span aria-hidden="true" style="width: 8px; height: 8px; background: var(--signal); flex: none;"></span>No templates</li>
+            <li style="display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;"><span aria-hidden="true" style="width: 8px; height: 8px; background: var(--signal); flex: none;"></span>No hand-offs</li>
+            <li style="display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;"><span aria-hidden="true" style="width: 8px; height: 8px; background: var(--signal); flex: none;"></span>No shortcuts</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" aria-labelledby="contact-title" style="background: var(--surface-sunk); border-top: 1px solid var(--line);">
+      <div style="max-width: 1280px; margin: 0 auto; padding: 104px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 56px;">
+        <div class="rv">
+          <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">05 / Contact</p>
+          <h2 id="contact-title" style="margin: 12px 0 0; font-size: clamp(44px, 7vw, 88px); line-height: 0.95; font-weight: 500; letter-spacing: -0.045em;">Let’s build the next one.</h2>
+          <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 14px; font-size: 18px;">
+            <a class="hd-link" href="mailto:hello@hundrd.studio" style="display: inline-flex; gap: 10px; align-items: baseline; align-self: flex-start;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">Email</span>hello@hundrd.studio</a>
+            <a class="hd-link" href="https://wa.me/919847161135" style="display: inline-flex; gap: 10px; align-items: baseline; align-self: flex-start;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">WhatsApp</span>+91 98471 61135</a>
+            <a class="hd-link" href="tel:+919847161135" style="display: inline-flex; gap: 10px; align-items: baseline; align-self: flex-start;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">Call</span>+91 98471 61135</a>
+            <a class="hd-link" href="https://linkedin.com/in/abhinav-h-897152250" style="display: inline-flex; gap: 10px; align-items: baseline; align-self: flex-start;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">LinkedIn</span>Abhinav H</a>
+          </div>
+        </div>
+
+        <div>
+          <form id="enquiry" class="rv" style="background: var(--surface-raised); border: 1px solid var(--line); padding: 32px; display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 18px;">
+            <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Name<input class="hd-field" type="text" name="name" required="" placeholder="Your name"></label>
+            <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Company<input class="hd-field" type="text" name="company" placeholder="Business name"></label>
+          </div>
+          <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Email<input class="hd-field" type="email" name="email" required="" placeholder="you@company.com"></label>
+          <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">What do you need?<textarea class="hd-field" name="message" rows="5" placeholder="A new site, a redesign, hosting…" style="resize: vertical;"></textarea></label>
+          <button class="hd-btn" type="submit" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 24px; background: var(--signal); border: 1px solid var(--signal); color: var(--on-signal); border-radius: 2px; font: inherit; font-size: 16px; font-weight: 500; cursor: pointer;">Send enquiry <span class="hd-arr" style="font-family: var(--font-mono);">→</span></button>
+        </form>
+          <div id="sent" class="hd-ok" role="status" hidden style="background: var(--surface-raised); border: 1px solid var(--line); padding: 32px; display: flex; flex-direction: column; gap: 12px; justify-content: center;">
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ok);"><span style="width: 6px; height: 6px; border-radius: 999px; background: var(--ok);"></span>Received</span>
+          <p id="sent-msg" style="margin: 0; font-size: 24px; line-height: 1.3; letter-spacing: -0.015em;">Thanks. You’ll hear back within one working day.</p>
+          <button type="button" id="again" style="align-self: flex-start; margin-top: 8px; background: none; border: 0; padding: 0; font: inherit; font-size: 15px; color: var(--signal-ink); cursor: pointer;">Send another</button>
+        </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer style="background: var(--ink); color: var(--surface); overflow: hidden;">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 72px 24px 32px;">
+      <div style="display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap;">
+        <p style="margin: 0; max-width: 420px; font-size: 20px; line-height: 1.5; color: #A39E94;">Fast, secure websites, down to the hundredth detail.</p>
+        <div style="display: flex; gap: 28px; flex-wrap: wrap; font-size: 15px;">
+          <a class="hd-link" href="#work" style="color: var(--surface);">Work</a>
+          <a class="hd-link" href="#services" style="color: var(--surface);">Services</a>
+          <a class="hd-link" href="#process" style="color: var(--surface);">Process</a>
+          <a class="hd-link" href="#contact" style="color: var(--surface);">Contact</a>
+        </div>
+      </div>
+      <p class="rv" aria-hidden="true" style="margin: 64px 0 0; display: flex; align-items: center; gap: 0.18em; font-size: clamp(88px, 21vw, 300px); line-height: 0.8; font-weight: 600; letter-spacing: -0.065em; color: var(--surface);">
+        <svg viewBox="0 0 96 96" style="width: 0.62em; height: 0.62em; flex: none;"><defs><pattern id="hd-px-giant" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#EEEBE4"></rect></pattern></defs><rect width="96" height="96" fill="url(#hd-px-giant)"></rect><rect x="90" y="90" width="6" height="6" fill="#FF5A2E"></rect></svg>
+        <span>hundrd</span>
+      </p>
+      <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #3A3833; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; color: #A39E94;">
+        <span>© 2026 hundrd · Bengaluru, India</span>
+        <a class="hd-link" href="#top" style="color: #A39E94;">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+<script src="main.js" defer></script>
+</body>
+</html>
