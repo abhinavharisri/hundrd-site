@@ -88,25 +88,9 @@
           ])
         ]),
         el('p', { style: 'margin: 8px 0 0; font-size: 16px; line-height: 1.6; color: var(--ink-muted);', text: pr.desc }),
-        dl,
-        pr.audit ? audit(pr.audit) : null
+        dl
       ]));
     });
-
-    /* Lighthouse scores, measured when the site is deployed and stored in PROJECTS */
-    function audit(a) {
-      var row = el('div', { style: 'margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-family: var(--font-mono); font-size: 12px;' });
-      row.appendChild(el('span', { style: mono11, text: 'Lighthouse' }));
-      [['Performance', a.perf], ['Accessibility', a.a11y], ['Best practices', a.bp], ['SEO', a.seo]].forEach(function (s) {
-        var good = s[1] >= 90;
-        row.appendChild(el('span', { style: 'display: inline-flex; align-items: center; gap: 6px;' }, [
-          el('span', { style: 'width: 6px; height: 6px; border-radius: 999px; background: ' + (good ? 'var(--ok)' : 'var(--signal)') + ';' }),
-          s[0] + ' ', el('b', { style: 'font-weight: 500;', text: String(s[1]) })
-        ]));
-      });
-      row.appendChild(el('span', { style: 'color: var(--ink-muted);', text: 'Loads in ' + a.lcp + 's · checked ' + a.date }));
-      return row;
-    }
 
     if (PROJECTS.length >= SHOW_COUNT_FROM) {
       document.getElementById('live-num').textContent = String(PROJECTS.length).padStart(2, '0');
