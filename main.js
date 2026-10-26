@@ -88,9 +88,25 @@
           ])
         ]),
         el('p', { style: 'margin: 8px 0 0; font-size: 16px; line-height: 1.6; color: var(--ink-muted);', text: pr.desc }),
-        dl
+        dl,
+        pr.audit ? audit(pr.audit) : null
       ]));
     });
+
+    /* Lighthouse scores, measured when the site is deployed and stored in PROJECTS */
+    function audit(a) {
+      var row = el('div', { style: 'margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-family: var(--font-mono); font-size: 12px;' });
+      row.appendChild(el('span', { style: mono11, text: 'Lighthouse' }));
+      [['Performance', a.perf], ['Accessibility', a.a11y], ['Best practices', a.bp], ['SEO', a.seo]].forEach(function (s) {
+        var good = s[1] >= 90;
+        row.appendChild(el('span', { style: 'display: inline-flex; align-items: center; gap: 6px;' }, [
+          el('span', { style: 'width: 6px; height: 6px; border-radius: 999px; background: ' + (good ? 'var(--ok)' : 'var(--signal)') + ';' }),
+          s[0] + ' ', el('b', { style: 'font-weight: 500;', text: String(s[1]) })
+        ]));
+      });
+      row.appendChild(el('span', { style: 'color: var(--ink-muted);', text: 'Loads in ' + a.lcp + 's · checked ' + a.date }));
+      return row;
+    }
 
     if (PROJECTS.length >= SHOW_COUNT_FROM) {
       document.getElementById('live-num').textContent = String(PROJECTS.length).padStart(2, '0');
@@ -166,6 +182,79 @@
       if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(EMAIL).then(function () { show('Copied'); }, legacy);
       else legacy();
     });
+  }
+
+  /* ---------- page vitals: weight, third parties, cookies and load time, measured live ---------- */
+  function vitals() {
+    var out = document.getElementById('vitals');
+    if (!out || !window.performance || !performance.getEntriesByType) return;
+    function render() {
+      var nav = performance.getEntriesByType('navigation')[0];
+      var bytes = nav ? (nav.encodedBodySize || nav.transferSize || 0) : 0, third = 0;
+      performance.getEntriesByType('resource').forEach(function (r) {
+        bytes += r.encodedBodySize || r.transferSize || 0;
+        if (/^https?:/.test(r.name) && new URL(r.name).origin !== location.origin) third++;
+      });
+      var cookies = document.cookie ? document.cookie.split(';').length : 0;
+      var load = nav && nav.loadEventEnd > 0 ? nav.loadEventEnd : performance.now();
+      out.textContent = 'This page: ' + Math.round(bytes / 1024) + ' KB · ' + third + ' third-party requests · ' +
+        cookies + (cookies === 1 ? ' cookie' : ' cookies') + ' · loaded in ' + (load / 1000).toFixed(1) + 's';
+    }
+    /* loadEventEnd is only set once the load handlers have finished */
+    if (document.readyState === 'complete') render();
+    else window.addEventListener('load', function () { setTimeout(render, 0); });
+    /* lazy screenshots arrive later, so keep the weight current */
+    if ('PerformanceObserver' in window) {
+      try { new PerformanceObserver(render).observe({ type: 'resource' }); } catch (err) {}
+    }
+  }
+
+  /* ---------- X-ray: blueprint view plus the response headers, fetched live ---------- */
+  function xray() {
+    var btn = document.getElementById('xray-toggle'), panel = document.getElementById('xray-panel');
+    if (!btn || !panel) return;
+    var list = document.getElementById('xray-list'), sum = document.getElementById('xray-sum'), checked = false;
+    /* the full list covers half a phone screen, so it starts folded there */
+    document.getElementById('xray-details').open = window.innerWidth > 640;
+    var HEADERS = [
+      ['content-security-policy', 'Content-Security-Policy'],
+      ['strict-transport-security', 'Strict-Transport-Security'],
+      ['x-frame-options', 'X-Frame-Options'],
+      ['x-content-type-options', 'X-Content-Type-Options'],
+      ['referrer-policy', 'Referrer-Policy'],
+      ['permissions-policy', 'Permissions-Policy'],
+      ['cross-origin-opener-policy', 'Cross-Origin-Opener-Policy']
+    ];
+    function row(ok, name, val) {
+      return el('li', null, [el('span', { class: ok ? 'ok' : 'no', text: (ok ? '✓ ' : '✗ ') + name }),
+        val ? el('span', { style: 'display: block; opacity: 0.7; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;', text: val }) : null]);
+    }
+    function check() {
+      if (checked) return;
+      checked = true;
+      sum.textContent = 'Checking…';
+      fetch(location.pathname, { method: 'HEAD', cache: 'no-store' }).then(function (r) {
+        list.textContent = '';
+        var n = 0;
+        HEADERS.forEach(function (hd) { var v = r.headers.get(hd[0]); if (v) n++; list.appendChild(row(!!v, hd[1], v)); });
+        sum.textContent = n + ' of ' + HEADERS.length + ' security headers on this response';
+      }).catch(function () { checked = false; sum.textContent = 'Couldn’t reach the server to check.'; });
+    }
+    function set(on) {
+      document.documentElement.classList.toggle('xray', on);
+      btn.setAttribute('aria-pressed', String(on));
+      panel.hidden = !on;
+      if (on) check();
+    }
+    btn.addEventListener('click', function () { set(btn.getAttribute('aria-pressed') !== 'true'); });
+    document.getElementById('xray-close').addEventListener('click', function () { set(false); btn.focus(); });
+    var wheel = document.getElementById('wheel');
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !panel.hidden && !(wheel && wheel.classList.contains('is-open'))) set(false);
+    });
+    /* hundrd.studio/#xray opens straight into it, for sharing */
+    if (location.hash === '#xray') set(true);
+    window.addEventListener('hashchange', function () { if (location.hash === '#xray') set(true); });
   }
 
   /* ---------- hero cube ---------- */
@@ -415,5 +504,7 @@
   renderWork();
   wireForm();
   wireCopy();
+  vitals();
+  xray();
   cube();
 })();

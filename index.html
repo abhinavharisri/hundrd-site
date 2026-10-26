@@ -14,6 +14,10 @@
 <meta property="og:image" content="https://hundrd.studio/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="hundrd">
 <link rel="preload" href="fonts/Geist-Medium.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
@@ -75,6 +79,27 @@ a:hover{color:var(--signal-ink)}
 .hd-wheel a.is-on{color:var(--ink)}
 .hd-wheel a.is-on::before{transform:scale(1)}
 .hd-wheel a:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
+/* X-ray: a blueprint view of the page, with notes on how each part is built */
+.hd-xbtn{display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 10px;border:1px solid #3A3833;border-radius:2px;background:none;font:inherit;font-family:var(--font-mono);font-size:12px;color:#A39E94;cursor:pointer;transition:color .35s var(--ease),border-color .35s var(--ease)}
+.hd-xbtn::before{content:"";width:6px;height:6px;border:1px solid currentColor}
+.hd-xbtn:hover{color:var(--surface);border-color:var(--surface)}
+.hd-xbtn[aria-pressed="true"]::before{background:currentColor}
+.hd-xbtn:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+.hd-xpanel{position:fixed;left:16px;bottom:16px;z-index:20;width:min(360px,calc(100vw - 32px));padding:16px;font-family:var(--font-mono);font-size:11px;line-height:1.5;letter-spacing:.04em}
+html.xray{--bp:#0B2540;--bp-grid:rgba(127,178,255,.09);--bp-line:rgba(127,178,255,.35);--bp-ink:#D5E6FF;--bp-acc:#7FB2FF}
+html.xray body,html.xray body>div{background-color:var(--bp)!important;background-image:linear-gradient(var(--bp-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bp-grid) 1px,transparent 1px)!important;background-size:24px 24px!important;color:var(--bp-ink)!important}
+html.xray body>div *{background-color:transparent!important;color:var(--bp-ink)!important;border-color:var(--bp-line)!important;box-shadow:none!important}
+html.xray .hd-head{background:rgba(11,37,64,.92)!important}
+html.xray :is(h1,h2,h3,p,a,button,input,textarea,dl,ul,img):not(#xray-panel *){outline:1px solid rgba(127,178,255,.16);outline-offset:2px}
+html.xray img{filter:grayscale(1) brightness(1.3);opacity:.55}
+html.xray :is(canvas,.hd-head svg){filter:invert(1) hue-rotate(180deg)}
+html.xray :is(section,footer,form)[data-xray]{position:relative}
+html.xray [data-xray]{outline:1px dashed var(--bp-acc)!important;outline-offset:-1px}
+html.xray [data-xray]::after{content:attr(data-xray);position:absolute;top:8px;right:8px;z-index:6;max-width:calc(100% - 16px);padding:3px 7px;font:500 10px/1.4 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--bp)!important;background:var(--bp-acc)!important;pointer-events:none}
+html.xray #xray-panel{background:var(--bp)!important;border:1px solid var(--bp-acc)!important}
+html.xray #xray-list .ok{color:#8FE3B0!important}
+html.xray #xray-list .no{color:#FF9B80!important}
 
 /* scroll cue: the arrow's pixels light up top to bottom, ending on the vermilion tip */
 @keyframes hdPix{0%,100%{opacity:.14}25%{opacity:1}55%{opacity:.14}}
@@ -139,7 +164,7 @@ a:hover{color:var(--signal-ink)}
 <div style="min-height: 100vh; background: var(--surface); color: var(--ink); font-family: var(--font-sans);">
 
   <!-- NAV -->
-  <header class="hd-head" style="position: sticky; top: 0; z-index: 10; background: rgba(245, 243, 238, 0.86); backdrop-filter: blur(10px) saturate(1.2); -webkit-backdrop-filter: blur(10px) saturate(1.2); border-bottom: 1px solid var(--line);">
+  <header class="hd-head" data-xray="Plain HTML · no framework" style="position: sticky; top: 0; z-index: 10; background: rgba(245, 243, 238, 0.86); backdrop-filter: blur(10px) saturate(1.2); -webkit-backdrop-filter: blur(10px) saturate(1.2); border-bottom: 1px solid var(--line);">
     <nav aria-label="Main" style="max-width: 1280px; margin: 0 auto; padding: 0 24px; height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
       <a href="#top" style="display: inline-flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 600; letter-spacing: -0.04em; line-height: 1;">
         <svg viewBox="0 0 96 96" width="24" height="24" aria-hidden="true"><defs><pattern id="hd-px-nav" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#151412"></rect></pattern></defs><rect width="96" height="96" fill="url(#hd-px-nav)"></rect><rect x="90" y="90" width="6" height="6" fill="#FF4A1C"></rect></svg>
@@ -158,8 +183,8 @@ a:hover{color:var(--signal-ink)}
   <main id="top">
 
     <!-- HERO -->
-    <section aria-labelledby="hero-title" style="max-width: 1280px; margin: 0 auto; padding: 48px 24px 56px; display: flex; flex-direction: column; align-items: center; text-align: center;">
-      <div id="cube-wrap" style="position: relative; width: min(520px, 86vw);">
+    <section aria-labelledby="hero-title" data-xray="Fonts self-hosted · no Google call" style="max-width: 1280px; margin: 0 auto; padding: 48px 24px 56px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+      <div id="cube-wrap" data-xray="Canvas · 0 libraries · sleeps off-screen" style="position: relative; width: min(520px, 86vw);">
         <canvas id="cube" class="hd-cube" tabindex="0" role="button" aria-expanded="false" aria-controls="wheel" aria-label="The hundrd mark as a rotating cube of pixels. Click or press Enter to open the section wheel." style="width: 100%; aspect-ratio: 1 / 1; display: block;"></canvas>
         <nav id="wheel" class="hd-wheel" aria-label="Sections"></nav>
       </div>
@@ -182,7 +207,7 @@ a:hover{color:var(--signal-ink)}
     </div>
 
     <!-- WORK -->
-    <section id="work" aria-labelledby="work-title" style="border-top: 1px solid var(--line);">
+    <section id="work" data-xray="Screenshots lazy-loaded · same origin" aria-labelledby="work-title" style="border-top: 1px solid var(--line);">
       <div style="max-width: 1280px; margin: 0 auto; padding: 104px 24px;">
         <div class="rv" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap;">
           <div>
@@ -207,7 +232,7 @@ a:hover{color:var(--signal-ink)}
     </section>
 
     <!-- SERVICES -->
-    <section id="services" aria-labelledby="services-title" style="background: var(--ink); color: var(--surface);">
+    <section id="services" data-xray="0 third-party scripts · CSP script-src self" aria-labelledby="services-title" style="background: var(--ink); color: var(--surface);">
       <div style="max-width: 1280px; margin: 0 auto; padding: 104px 24px;">
         <div class="rv">
           <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #A39E94;">02 / Services</p>
@@ -239,7 +264,7 @@ a:hover{color:var(--signal-ink)}
     </section>
 
     <!-- PROCESS -->
-    <section id="process" aria-labelledby="process-title">
+    <section id="process" data-xray="No build step · no bundler" aria-labelledby="process-title">
       <div style="max-width: 1280px; margin: 0 auto; padding: 104px 24px;">
         <div class="rv">
           <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">03 / Process</p>
@@ -274,7 +299,7 @@ a:hover{color:var(--signal-ink)}
     </section>
 
     <!-- STUDIO -->
-    <section id="studio" aria-labelledby="studio-title" style="border-top: 1px solid var(--line);">
+    <section id="studio" data-xray="Can’t be framed · frame-ancestors none" aria-labelledby="studio-title" style="border-top: 1px solid var(--line);">
       <div style="max-width: 1280px; margin: 0 auto; padding: 104px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 40px 56px; align-items: start;">
         <div class="rv">
           <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">04 / Studio</p>
@@ -289,10 +314,6 @@ a:hover{color:var(--signal-ink)}
             <li style="display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;"><span aria-hidden="true" style="width: 8px; height: 8px; background: var(--signal); flex: none;"></span>No shortcuts</li>
           </ul>
         </div>
-        <figure class="rv" style="grid-column: 1 / -1; margin: 24px 0 0;">
-          <img src="assets/studio-1600.jpg" srcset="assets/studio-1000.jpg 1000w, assets/studio-1600.jpg 1600w" sizes="(max-width: 1280px) calc(100vw - 48px), 1232px" width="1600" height="904" loading="lazy" decoding="async" alt="A wooden desk by an open window on a summer afternoon: a laptop, a keyboard, a mug of coffee, a sketchbook of wireframes and sunlight through the leaves." style="display: block; width: 100%; height: auto; border: 1px solid var(--line); background: var(--surface-sunk);">
-          <figcaption style="margin-top: 12px; display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);"><span aria-hidden="true" style="width: 6px; height: 6px; background: var(--signal); flex: none;"></span>Where it gets built · Bengaluru</figcaption>
-        </figure>
       </div>
     </section>
 
@@ -314,7 +335,7 @@ a:hover{color:var(--signal-ink)}
         </div>
 
         <div>
-          <form id="enquiry" class="rv" style="background: var(--surface-raised); border: 1px solid var(--line); padding: 32px; display: flex; flex-direction: column; gap: 18px;">
+          <form id="enquiry" data-xray="Where it can post is locked by CSP" class="rv" style="background: var(--surface-raised); border: 1px solid var(--line); padding: 32px; display: flex; flex-direction: column; gap: 18px;">
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 18px;">
             <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Name<input class="hd-field" type="text" name="name" required="" placeholder="Your name"></label>
             <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Company<input class="hd-field" type="text" name="company" placeholder="Business name"></label>
@@ -339,7 +360,7 @@ a:hover{color:var(--signal-ink)}
   </main>
 
   <!-- FOOTER -->
-  <footer style="background: var(--ink); color: var(--surface); overflow: hidden;">
+  <footer data-xray="No cookies · no trackers" style="background: var(--ink); color: var(--surface); overflow: hidden;">
     <div style="max-width: 1280px; margin: 0 auto; padding: 72px 24px 32px;">
       <div style="display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap;">
         <p style="margin: 0; max-width: 420px; font-size: 20px; line-height: 1.5; color: #A39E94;">Fast, secure websites, down to the hundredth detail.</p>
@@ -354,12 +375,23 @@ a:hover{color:var(--signal-ink)}
         <svg viewBox="0 0 96 96" style="width: 0.62em; height: 0.62em; flex: none;"><defs><pattern id="hd-px-giant" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#EEEBE4"></rect></pattern></defs><rect width="96" height="96" fill="url(#hd-px-giant)"></rect><rect x="90" y="90" width="6" height="6" style="fill: var(--ink);"></rect><rect class="hd-blink" x="90" y="90" width="6" height="6" fill="#FF5A2E"></rect></svg>
         <span>hundrd</span>
       </p>
-      <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #3A3833; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; color: #A39E94;">
+      <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #3A3833; display: flex; justify-content: space-between; align-items: center; gap: 12px 24px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; color: #A39E94;">
         <span>© 2026 hundrd · Bengaluru, India</span>
-        <a class="hd-link" href="#top" style="color: #A39E94;">Back to top ↑</a>
+        <span id="vitals" title="Measured live in your browser"></span>
+        <span style="display: inline-flex; align-items: center; gap: 24px;">
+          <button type="button" id="xray-toggle" class="hd-xbtn" aria-pressed="false" aria-controls="xray-panel">X-ray</button>
+          <a class="hd-link" href="#top" style="color: #A39E94;">Back to top ↑</a>
+        </span>
       </div>
     </div>
   </footer>
+
+  <aside id="xray-panel" class="hd-xpanel" aria-label="Security headers, checked live" hidden>
+    <p style="margin: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px;"><span>X-ray · live response headers</span><button type="button" id="xray-close" class="hd-xbtn">Exit</button></p>
+    <details id="xray-details" style="margin-top: 12px;"><summary id="xray-sum" style="cursor: pointer;">Checking…</summary>
+      <ul id="xray-list" style="margin: 10px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px;"></ul>
+    </details>
+  </aside>
 
 </div>
 <script src="main.js" defer></script>
