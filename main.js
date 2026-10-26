@@ -173,7 +173,66 @@
     var cv = document.getElementById('cube');
     if (!cv) return;
     var SPEED = 1, WAVE = 0.5, N = 200;
-    var m = { yawOff: 0, pitOff: 0, vYaw: 0, vPit: 0, hx: 0, hy: 0, tx: 0, ty: 0, drag: false, moved: 0, lx: 0, ly: 0, burstAt: -1e9, introAt: performance.now() };
+    var D = 34, K = 0.86 * N * D / 17.3, h = 0.3;
+    var m = { yawOff: 0, pitOff: 0, vYaw: 0, vPit: 0, hx: 0, hy: 0, tx: 0, ty: 0, drag: false, moved: 0, lx: 0, ly: 0, introAt: performance.now(),
+      open: 0, openT: 0, hl: -1, hk: [0, 0, 0, 0, 0] };
+
+    /* section wheel: clicking the cube opens it into a ring of five arcs, one per section,
+       clockwise from the top. Real links sit over the canvas for keyboard and screen readers. */
+    var SECTIONS = [['Work', '#work'], ['Services', '#services'], ['Process', '#process'], ['Studio', '#studio'], ['Contact', '#contact']];
+    var SEC = SECTIONS.length, STEP = Math.PI * 2 / SEC, SPAN = STEP - 0.26;
+    var secAng = function (s) { return Math.PI / 2 - s * STEP; };
+    var unit = K / D / N; /* one world unit at the cube's depth, as a fraction of the canvas width */
+    var wrap = document.getElementById('cube-wrap'), wheel = document.getElementById('wheel'), links = [];
+    if (wheel) SECTIONS.forEach(function (sc, s) {
+      var a = el('a', { href: sc[1], text: sc[0] });
+      a.style.left = (50 + Math.cos(secAng(s)) * 4.2 * unit * 100) + '%';
+      a.style.top = (50 - Math.sin(secAng(s)) * 4.2 * unit * 100) + '%';
+      a.addEventListener('focus', function () { highlight(s); });
+      links.push(wheel.appendChild(a));
+    });
+    function highlight(s) {
+      m.hl = s;
+      links.forEach(function (a, i) { a.classList.toggle('is-on', i === s); });
+      kick();
+    }
+    function setOpen(o) {
+      if (!wheel || (m.openT === 1) === o) return;
+      m.openT = o ? 1 : 0;
+      wheel.classList.toggle('is-open', o);
+      cv.setAttribute('aria-expanded', String(o));
+      if (!o) highlight(-1);
+      kick();
+    }
+    /* which arc a pointer is over, or -1 for the hollow centre and outside the ring */
+    function sectorAt(e) {
+      var r = wheel.getBoundingClientRect();
+      var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+      var dist = Math.sqrt(dx * dx + dy * dy) / (r.width * unit);
+      if (dist < 2.2 || dist > 10.5) return -1;
+      var s = Math.round((Math.PI / 2 - Math.atan2(-dy, dx)) / STEP);
+      return ((s % SEC) + SEC) % SEC;
+    }
+    if (wheel) {
+      wheel.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse') highlight(sectorAt(e)); });
+      wheel.addEventListener('pointerdown', function (e) { highlight(sectorAt(e)); });
+      wheel.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') highlight(-1); });
+      wheel.addEventListener('click', function (e) {
+        if (e.target.closest('a')) { setOpen(false); return; }
+        var s = sectorAt(e);
+        setOpen(false);
+        if (s >= 0) links[s].click();
+        else cv.focus();
+      });
+      wheel.addEventListener('keydown', function (e) {
+        var i = links.indexOf(document.activeElement);
+        if (e.key === 'Escape') { e.preventDefault(); setOpen(false); cv.focus(); }
+        else if (i >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) { e.preventDefault(); links[(i + 1) % SEC].focus(); }
+        else if (i >= 0 && (e.key === 'ArrowLeft' || e.key === 'ArrowUp')) { e.preventDefault(); links[(i + SEC - 1) % SEC].focus(); }
+      });
+      wheel.addEventListener('focusout', function (e) { if (!wheel.contains(e.relatedTarget) && e.relatedTarget !== cv) setOpen(false); });
+      document.addEventListener('pointerdown', function (e) { if (!wrap.contains(e.target)) setOpen(false); });
+    }
     cv.addEventListener('pointerdown', function (e) {
       m.drag = true; m.moved = 0; m.lx = e.clientX; m.ly = e.clientY; m.vYaw = 0; m.vPit = 0;
       if (cv.setPointerCapture && e.pointerId != null) { try { cv.setPointerCapture(e.pointerId); } catch (err) {} }
@@ -189,11 +248,14 @@
       m.vYaw = dx * 0.009; m.vPit = dy * 0.007;
       m.yawOff += m.vYaw; m.pitOff = Math.max(-1.1, Math.min(1.1, m.pitOff + m.vPit));
     });
-    var up = function () { if (m.drag && m.moved < 5) m.burstAt = performance.now(); m.drag = false; kick(); };
-    cv.addEventListener('pointerup', up);
-    cv.addEventListener('pointercancel', up);
+    /* open on click, not pointerup: on touch the click comes after, and would land on the open wheel */
+    cv.addEventListener('pointerup', function () { m.drag = false; kick(); });
+    cv.addEventListener('click', function () { if (m.moved < 5) setOpen(true); });
+    cv.addEventListener('pointercancel', function () { m.drag = false; kick(); });
     cv.addEventListener('pointerleave', function () { m.tx = 0; m.ty = 0; });
-    cv.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); m.burstAt = performance.now(); kick(); } });
+    cv.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(true); if (links[0]) links[0].focus(); }
+    });
 
     var bayer = [0,32,8,40,2,34,10,42,48,16,56,24,50,18,58,26,12,44,4,36,14,46,6,38,60,28,52,20,62,30,54,22,3,35,11,43,1,33,9,41,51,19,59,27,49,17,57,25,15,47,7,39,13,45,5,37,63,31,55,23,61,29,53,21];
     var FACES = [
@@ -207,16 +269,17 @@
     var L = [-0.45, 0.75, 0.5], ln = Math.sqrt(L[0]*L[0] + L[1]*L[1] + L[2]*L[2]);
     L = [L[0]/ln, L[1]/ln, L[2]/ln];
     var seed = 7, rnd = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
-    var vox = [];
+    var vox = [], nv = 0, PER = Math.ceil((1000 - 512) / SEC); /* shell pixels per arc */
     for (var kk = 0; kk < 10; kk++) for (var j = 0; j < 10; j++) for (var i = 0; i < 10; i++) {
       if (!(i === 0 || i === 9 || j === 0 || j === 9 || kk === 0 || kk === 9)) continue;
       var b = [i - 4.5, 4.5 - j, 4.5 - kk];
       var u = rnd() * 2 - 1, th = rnd() * Math.PI * 2, r = Math.sqrt(1 - u * u);
-      var bl = Math.sqrt(b[0]*b[0] + b[1]*b[1] + b[2]*b[2]);
+      var sec = nv % SEC, slot = Math.floor(nv++ / SEC);
       vox.push({
         b: b, sig: (i === 9 && j === 9 && kk === 0), ph: (i + j + kk) * 0.35,
         sd: [r * Math.cos(th), r * Math.sin(th), u], sr: 10 + rnd() * 14, delay: rnd() * 0.55,
-        od: [b[0] / bl + (rnd() - 0.5) * 0.5, b[1] / bl + (rnd() - 0.5) * 0.5, b[2] / bl + (rnd() - 0.5) * 0.5], ok: 0.6 + rnd() * 0.8
+        /* its place in the open wheel: an arc, a radius across the ring's width, a little depth */
+        sec: sec, ra: secAng(sec) + ((slot + rnd()) / PER - 0.5) * SPAN, rr: 6.7 + rnd() * 1.6, rz: (rnd() - 0.5) * 1.2
       });
     }
     var ctx = cv.getContext('2d'), id = new Int32Array(N * N);
@@ -234,8 +297,18 @@
       m.hx += (m.tx - m.hx) * 0.06; m.hy += (m.ty - m.hy) * 0.06;
 
       var introK = reduce ? 1 : (now - m.introAt) / 1000;
-      var burstK = (now - m.burstAt) / 1000;
-      var burst = burstK >= 0 && burstK < 3 ? 6 * burstK * Math.exp(-3.2 * burstK) : 0;
+      /* wheel: open eases towards its target, each arc's highlight towards the hovered one */
+      if (reduce) m.open = m.openT;
+      else m.open += Math.max(-dt / 0.7, Math.min(dt / 0.7, m.openT - m.open));
+      var hkBusy = false;
+      for (var hs = 0; hs < SEC; hs++) {
+        var hkT = hs === m.hl ? 1 : 0;
+        m.hk[hs] = reduce ? hkT : m.hk[hs] + (hkT - m.hk[hs]) * Math.min(1, dt * 12);
+        if (Math.abs(hkT - m.hk[hs]) > 0.002) hkBusy = true;
+      }
+      /* the red pixel sits in the hollow centre and leans towards the hovered arc */
+      var sigX = 0, sigY = 0;
+      for (hs = 0; hs < SEC; hs++) { sigX += m.hk[hs] * Math.cos(secAng(hs)); sigY += m.hk[hs] * Math.sin(secAng(hs)); }
 
       var yaw = t * 0.45 + 0.6 + m.yawOff + m.hx, pit = 0.5 + 0.22 * Math.sin(t * 0.3) + m.pitOff + m.hy, rol = 0.12 * Math.sin(t * 0.23);
       var cY = Math.cos(yaw), sY = Math.sin(yaw), cP = Math.cos(pit), sP = Math.sin(pit), cR = Math.cos(rol), sR = Math.sin(rol);
@@ -244,27 +317,43 @@
         var y2 = y * cP - z1 * sP, z2 = y * sP + z1 * cP;
         return [x1 * cR - y2 * sR, x1 * sR + y2 * cR, z2];
       };
-      var D = 34, K = 0.86 * N * D / 17.3, h = 0.3;
+      /* face normals and corners turn with the cube even inside the wheel, so pixels keep glinting */
+      var RN = [], RC = [];
+      for (var f = 0; f < 6; f++) {
+        var cs = FACES[f][1];
+        RN.push(rot(FACES[f][0][0], FACES[f][0][1], FACES[f][0][2]));
+        RC.push([rot(cs[0][0], cs[0][1], cs[0][2]), rot(cs[1][0], cs[1][1], cs[1][2]), rot(cs[2][0], cs[2][1], cs[2][2]), rot(cs[3][0], cs[3][1], cs[3][2])]);
+      }
       var faces = [];
       for (var vi = 0; vi < vox.length; vi++) {
         var vx = vox[vi], base = vx.b;
         var a = Math.max(0, Math.min(1, (introK * 0.85 - vx.delay)));
         var ea = 1 - Math.pow(1 - a, 4), scat = (1 - ea) * vx.sr;
         var push = 1 + WAVE * 0.06 * (1 + Math.sin(t * 1.2 + vx.ph));
-        var bo = burst * 5.5 * vx.ok;
-        var cx = base[0] * push + vx.sd[0] * scat + vx.od[0] * bo;
-        var cy = base[1] * push + vx.sd[1] * scat + vx.od[1] * bo;
-        var cz = base[2] * push + vx.sd[2] * scat + vx.od[2] * bo;
-        for (var f = 0; f < 6; f++) {
-          var n = FACES[f][0], cs = FACES[f][1], outward = false;
+        var P = rot(base[0] * push + vx.sd[0] * scat, base[1] * push + vx.sd[1] * scat, base[2] * push + vx.sd[2] * scat);
+        /* each pixel leaves the cube for its place in the wheel on a slightly different beat */
+        var lo = Math.max(0, Math.min(1, m.open * 1.5 - vx.delay * 0.9));
+        var eo = lo < 0.5 ? 4 * lo * lo * lo : 1 - Math.pow(-2 * lo + 2, 3) / 2;
+        var hv = vx.sig ? 0 : m.hk[vx.sec], hh = h;
+        if (eo > 0) {
+          var T;
+          if (vx.sig) { T = [sigX, sigY, 2]; hh = h * (1 + eo * 0.8); }
+          else {
+            var rr = vx.rr * (1 + (push - 1) * 0.5) + hv * 0.7;
+            T = [rr * Math.cos(vx.ra), rr * Math.sin(vx.ra), vx.rz];
+          }
+          P = [P[0] + (T[0] - P[0]) * eo, P[1] + (T[1] - P[1]) * eo, P[2] + (T[2] - P[2]) * eo];
+        }
+        for (f = 0; f < 6; f++) {
+          var n = FACES[f][0], outward = false;
           for (var ax = 0; ax < 3; ax++) { if (n[ax] !== 0 && Math.abs(base[ax]) === 4.5 && (base[ax] > 0 ? 1 : -1) === n[ax]) outward = true; }
-          if (!outward && burst < 0.02 && ea > 0.999) continue;
-          var nr = rot(n[0], n[1], n[2]);
-          var c = rot(cx + n[0] * h, cy + n[1] * h, cz + n[2] * h);
+          if (!outward && ea > 0.999 && eo < 0.001) continue;
+          var nr = RN[f];
+          var c = [P[0] + nr[0] * hh, P[1] + nr[1] * hh, P[2] + nr[2] * hh];
           if (-nr[0] * c[0] - nr[1] * c[1] + nr[2] * (D - c[2]) <= 0) continue;
           var pts = [], zs = 0, bad = false;
           for (var v = 0; v < 4; v++) {
-            var q = rot(cx + cs[v][0] * h, cy + cs[v][1] * h, cz + cs[v][2] * h);
+            var rc = RC[f][v], q = [P[0] + rc[0] * hh, P[1] + rc[1] * hh, P[2] + rc[2] * hh];
             if (D - q[2] < 2) { bad = true; break; }
             var sc = K / (D - q[2]);
             pts.push([N / 2 + q[0] * sc, N / 2 - q[1] * sc]);
@@ -273,6 +362,9 @@
           if (bad) continue;
           var bright = nr[0] * L[0] + nr[1] * L[1] + nr[2] * L[2]; if (bright < 0) bright = 0;
           var dk = 1 - bright, dark = dk > 0.6 ? 1 : dk > 0.3 ? 0.62 : 0.42;
+          /* in the wheel, resting arcs fade back and the hovered arc goes solid */
+          dark = dark * (1 - 0.35 * eo);
+          dark += (1 - dark) * hv * eo;
           faces.push({ pts: pts, z: zs / 4, dark: dark, sig: vx.sig });
         }
       }
@@ -306,7 +398,7 @@
         }
       }
       t += dt * 0.75 * SPEED;
-      var busy = burst > 0.001 || m.drag || Math.abs(m.vYaw) > 1e-4;
+      var busy = m.drag || Math.abs(m.vYaw) > 1e-4 || m.open !== m.openT || hkBusy;
       if ((!reduce || busy) && visible && !document.hidden) raf = requestAnimationFrame(frame);
     }
     function kick() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }

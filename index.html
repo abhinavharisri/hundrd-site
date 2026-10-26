@@ -67,6 +67,15 @@ a:hover{color:var(--signal-ink)}
 .hd-cube{cursor:grab;touch-action:pan-y;animation:hdFade 1.2s var(--ease) both}
 .hd-cube:active{cursor:grabbing}
 
+/* section wheel inside the hero cube */
+.hd-wheel{position:absolute;inset:0;cursor:pointer;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility 0s .3s}
+.hd-wheel.is-open{pointer-events:auto;opacity:1;visibility:visible;transition:opacity .5s var(--ease) .45s}
+.hd-wheel a{position:absolute;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:6px;padding:6px 8px;background:var(--surface);font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);white-space:nowrap;transition:color .3s var(--ease)}
+.hd-wheel a::before{content:"";width:6px;height:6px;background:var(--signal);transform:scale(0);transition:transform .3s var(--ease)}
+.hd-wheel a.is-on{color:var(--ink)}
+.hd-wheel a.is-on::before{transform:scale(1)}
+.hd-wheel a:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+
 /* scroll cue: the arrow's pixels light up top to bottom, ending on the vermilion tip */
 @keyframes hdPix{0%,100%{opacity:.14}25%{opacity:1}55%{opacity:.14}}
 .hd-pix{animation:hdPix 1.8s var(--ease) infinite}
@@ -150,8 +159,11 @@ a:hover{color:var(--signal-ink)}
 
     <!-- HERO -->
     <section aria-labelledby="hero-title" style="max-width: 1280px; margin: 0 auto; padding: 48px 24px 56px; display: flex; flex-direction: column; align-items: center; text-align: center;">
-      <canvas id="cube" class="hd-cube" tabindex="0" role="img" aria-label="The hundrd mark as a rotating cube of pixels. Drag to spin, click or press Enter to scatter it." style="width: min(520px, 86vw); aspect-ratio: 1 / 1; display: block;"></canvas>
-      <p class="hd-in" style="margin: 4px 0 0; animation-delay: 1.4s; font-family: var(--font-mono); font-size: 11px; line-height: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Drag to spin · Click to scatter</p>
+      <div id="cube-wrap" style="position: relative; width: min(520px, 86vw);">
+        <canvas id="cube" class="hd-cube" tabindex="0" role="button" aria-expanded="false" aria-controls="wheel" aria-label="The hundrd mark as a rotating cube of pixels. Click or press Enter to open the section wheel." style="width: 100%; aspect-ratio: 1 / 1; display: block;"></canvas>
+        <nav id="wheel" class="hd-wheel" aria-label="Sections"></nav>
+      </div>
+      <p class="hd-in" style="margin: 4px 0 0; animation-delay: 1.4s; font-family: var(--font-mono); font-size: 11px; line-height: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Drag to spin · Click to explore</p>
       <p class="hd-in" style="margin: 36px 0 0; animation-delay: 0.2s; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Web studio · Bengaluru · 100% or nothing</p>
       <h1 id="hero-title" style="margin: 16px 0 0; overflow: hidden; padding-bottom: 0.06em; font-size: clamp(64px, 11vw, 140px); line-height: 0.92; font-weight: 500; letter-spacing: -0.055em;"><span class="hd-clip" style="animation-delay: 0.35s;">hundrd<span class="hd-blink" style="color: var(--signal);">.</span></span></h1>
       <p class="hd-in" style="margin: 28px 0 0; animation-delay: 0.7s; max-width: 560px; font-size: 20px; line-height: 1.5; color: var(--ink-muted);">Fast, secure websites for businesses that operate at scale. Designed, built and hosted by one studio, down to the hundredth detail.</p>
