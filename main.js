@@ -16,7 +16,13 @@
       facts: [{ label: 'Product families', value: 26, count: true }, { label: 'Images optimised', value: 191, count: true }, { label: 'Spec PDFs', value: 22, count: true }] },
     { name: 'Mandarin Orchid', url: 'https://mandarinorchid.in', img: 'assets/mandarin.jpg', ratio: 2869 / 1267,
       desc: 'Resort website where guests browse stays and make bookings. Hand-built, framework-free and served from Cloudflare’s edge.',
-      facts: [{ label: 'Type', value: 'Hospitality' }, { label: 'Stack', value: 'Vanilla JS' }, { label: 'Delivery', value: 'Edge-served' }] }
+      facts: [{ label: 'Type', value: 'Hospitality' }, { label: 'Stack', value: 'Vanilla JS' }, { label: 'Delivery', value: 'Edge-served' }] },
+    { name: 'Thamarai Designers', url: 'https://thamaraidesigners.com', img: 'assets/thamarai.jpg', ratio: 3000 / 1267,
+      desc: 'Lookbook and collection for a bespoke embroidery boutique in Coimbatore: hand-finished pieces, occasion collections and WhatsApp viewings.',
+      facts: [{ label: 'Pieces', value: 53, count: true }, { label: 'Collections', value: 4, count: true }, { label: 'Lookbook features', value: 5, count: true }] },
+    { name: 'KS Store', url: 'https://ks-pazhamudir.abhinavharisri.workers.dev', img: 'assets/ks.jpg', ratio: 3000 / 1267,
+      desc: 'Online shop floor for a neighbourhood grocery store: a searchable catalogue, ready-made recipe baskets and a WhatsApp checkout.',
+      facts: [{ label: 'Products', value: 1631, count: true }, { label: 'Shelves', value: 16, count: true }, { label: 'Ready baskets', value: 6, count: true }] }
   ];
 
   /* Show the "Sites live" counter once there are at least this many projects. */
