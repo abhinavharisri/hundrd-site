@@ -52,6 +52,8 @@ a:hover{color:var(--signal-ink)}
 .hd-link{position:relative;padding:6px 0}
 .hd-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
 .hd-link:hover::after{transform:scaleX(1);transform-origin:left}
+.hd-chip{display:inline-flex;align-items:center;height:28px;padding:0 10px;border:1px solid var(--line);border-radius:2px;background:none;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);cursor:pointer;transition:color .35s var(--ease),border-color .35s var(--ease)}
+.hd-chip:hover{color:var(--ink);border-color:var(--ink)}
 
 /* buttons */
 .hd-btn{transition:background-color .35s var(--ease),border-color .35s var(--ease),color .35s var(--ease),transform .35s var(--ease)}
@@ -285,9 +287,12 @@ a:hover{color:var(--signal-ink)}
           <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">05 / Contact</p>
           <h2 id="contact-title" style="margin: 12px 0 0; font-size: clamp(44px, 7vw, 88px); line-height: 0.95; font-weight: 500; letter-spacing: -0.045em;">Let’s build the next one.</h2>
           <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 14px; font-size: 18px;">
-            <a class="hd-link" href="mailto:hello@hundrd.studio" style="display: inline-flex; gap: 10px; align-items: baseline; align-self: flex-start;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">Email</span>hello@hundrd.studio</a>
-            <a class="hd-link" href="https://wa.me/919847161135" style="display: inline-flex; gap: 10px; align-items: baseline; align-self: flex-start;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">WhatsApp</span>+91 98471 61135</a>
-            <a class="hd-link" href="tel:+919847161135" style="display: inline-flex; gap: 10px; align-items: baseline; align-self: flex-start;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">Call</span>+91 98471 61135</a>
+            <div style="display: flex; gap: 10px 12px; align-items: center; flex-wrap: wrap;">
+              <a class="hd-link" href="mailto:hello@hundrd.studio" style="display: inline-flex; gap: 10px; align-items: baseline;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">Email</span>hello@hundrd.studio</a>
+              <button type="button" id="copy-email" class="hd-chip">Copy</button>
+              <a class="hd-chip" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=hello@hundrd.studio" target="_blank" rel="noopener">Gmail ↗</a>
+              <span id="copy-note" role="status" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ok);"></span>
+            </div>
             <a class="hd-link" href="https://linkedin.com/in/abhinav-h-897152250" style="display: inline-flex; gap: 10px; align-items: baseline; align-self: flex-start;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">LinkedIn</span>Abhinav H</a>
           </div>
         </div>
@@ -303,8 +308,12 @@ a:hover{color:var(--signal-ink)}
           <button class="hd-btn" type="submit" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 24px; background: var(--signal); border: 1px solid var(--signal); color: var(--on-signal); border-radius: 2px; font: inherit; font-size: 16px; font-weight: 500; cursor: pointer;">Send enquiry <span class="hd-arr" style="font-family: var(--font-mono);">→</span></button>
         </form>
           <div id="sent" class="hd-ok" role="status" hidden style="background: var(--surface-raised); border: 1px solid var(--line); padding: 32px; display: flex; flex-direction: column; gap: 12px; justify-content: center;">
-          <span style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ok);"><span style="width: 6px; height: 6px; border-radius: 999px; background: var(--ok);"></span>Received</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ok);"><span style="width: 6px; height: 6px; border-radius: 999px; background: var(--ok);"></span><span id="sent-tag">Received</span></span>
           <p id="sent-msg" style="margin: 0; font-size: 24px; line-height: 1.3; letter-spacing: -0.015em;">Thanks. You’ll hear back within one working day.</p>
+          <div id="sent-links" hidden style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a id="sent-gmail" class="hd-btn" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; background: var(--signal); border: 1px solid var(--signal); color: var(--on-signal); border-radius: 2px; font-size: 15px; font-weight: 500;">Send with Gmail <span class="hd-arr" style="font-family: var(--font-mono);">↗</span></a>
+            <a id="sent-mailto" class="hd-btn" style="display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border: 1px solid var(--line); border-radius: 2px; font-size: 15px; font-weight: 500;">Other email app</a>
+          </div>
           <button type="button" id="again" style="align-self: flex-start; margin-top: 8px; background: none; border: 0; padding: 0; font: inherit; font-size: 15px; color: var(--signal-ink); cursor: pointer;">Send another</button>
         </div>
         </div>

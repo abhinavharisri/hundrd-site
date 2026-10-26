@@ -12,26 +12,27 @@
      ============================================================ */
   var PROJECTS = [
     { name: 'Superior Electric', url: 'https://superiorelectric.in', img: 'assets/superior.jpg', ratio: 3026 / 1267,
-      desc: 'Product catalogue for an electrical products company: spec sheets, image carousels and a WhatsApp enquiry cart.',
+      desc: 'Product catalogue for an electrical products company: spec sheets, image carousels and an enquiry cart.',
       facts: [{ label: 'Product families', value: 26, count: true }, { label: 'Images optimised', value: 191, count: true }, { label: 'Spec PDFs', value: 22, count: true }] },
     { name: 'Mandarin Orchid', url: 'https://mandarinorchid.in', img: 'assets/mandarin.jpg', ratio: 2869 / 1267,
       desc: 'Resort website where guests browse stays and make bookings. Hand-built, framework-free and served from Cloudflare’s edge.',
       facts: [{ label: 'Type', value: 'Hospitality' }, { label: 'Stack', value: 'Vanilla JS' }, { label: 'Delivery', value: 'Edge-served' }] },
     { name: 'Thamarai Designers', url: 'https://thamaraidesigners.com', img: 'assets/thamarai.jpg', ratio: 3000 / 1267,
-      desc: 'Lookbook and collection for a bespoke embroidery boutique in Coimbatore: hand-finished pieces, occasion collections and WhatsApp viewings.',
+      desc: 'Lookbook and collection for a bespoke embroidery boutique in Coimbatore: hand-finished pieces, occasion collections and private viewings.',
       facts: [{ label: 'Pieces', value: 53, count: true }, { label: 'Collections', value: 4, count: true }, { label: 'Lookbook features', value: 5, count: true }] },
     { name: 'KS Store', url: 'https://ks-pazhamudir.abhinavharisri.workers.dev', img: 'assets/ks.jpg', ratio: 3000 / 1267,
-      desc: 'Online shop floor for a neighbourhood grocery store: a searchable catalogue, ready-made recipe baskets and a WhatsApp checkout.',
-      facts: [{ label: 'Products', value: 1631, count: true }, { label: 'Shelves', value: 16, count: true }, { label: 'Ready baskets', value: 6, count: true }] }
+      desc: 'Online shop floor for a neighbourhood grocery store: a searchable catalogue, ready-made recipe baskets and a one-tap checkout.',
+      facts: [{ label: 'Type', value: 'E-commerce website' }, { label: 'Products', value: 1631, count: true }, { label: 'Shelves', value: 16, count: true }] }
   ];
 
   /* Show the "Sites live" counter once there are at least this many projects. */
   var SHOW_COUNT_FROM = 10;
 
   /* Contact form. Paste a Formspree endpoint (https://formspree.io/f/xxxxxxx) to receive
-     enquiries by email. Left empty, the form opens WhatsApp with the message filled in. */
+     enquiries by email straight from the form. Left empty, the form drafts the email and
+     offers Gmail or the visitor's own email app to send it. */
   var FORM_ENDPOINT = '';
-  var WHATSAPP = '919847161135';
+  var EMAIL = 'hello@hundrd.studio';
 
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -118,24 +119,52 @@
     var form = document.getElementById('enquiry'), sent = document.getElementById('sent');
     if (!form || !sent) return;
     var msg = document.getElementById('sent-msg'), btn = form.querySelector('button[type=submit]');
+    var tag = document.getElementById('sent-tag'), links = document.getElementById('sent-links');
     function done(text) { if (text) msg.textContent = text; form.hidden = true; sent.hidden = false; }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var d = new FormData(form);
       if (!FORM_ENDPOINT) {
-        var text = 'Hi hundrd, I’m ' + d.get('name') + (d.get('company') ? ' from ' + d.get('company') : '') + '.\n\n' +
-          (d.get('message') || 'I’d like to talk about a website.') + '\n\nEmail: ' + d.get('email');
-        window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
-        done('Your message is ready in WhatsApp. Hit send there and you’ll hear back within one working day.');
+        /* mailto alone does nothing on machines without a mail app set up (common on
+           Windows and phones), so offer Gmail in the browser alongside it */
+        var subject = 'Website enquiry from ' + d.get('name') + (d.get('company') ? ', ' + d.get('company') : '');
+        var body = 'Hi hundrd, I’m ' + d.get('name') + (d.get('company') ? ' from ' + d.get('company') : '') + '.\n\n' +
+          (d.get('message') || 'I’d like to talk about a website.') + '\n\nReply to: ' + d.get('email');
+        document.getElementById('sent-gmail').href = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + EMAIL +
+          '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        document.getElementById('sent-mailto').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+        tag.textContent = 'Ready to send';
+        links.hidden = false;
+        done('Your email is drafted. Send it from Gmail or your email app and you’ll hear back within one working day.');
         return;
       }
       btn.disabled = true;
       fetch(FORM_ENDPOINT, { method: 'POST', body: d, headers: { Accept: 'application/json' } })
         .then(function (r) { if (!r.ok) throw new Error(r.status); done(); })
-        .catch(function () { btn.disabled = false; alert('That didn’t go through. Please email hello@hundrd.studio or WhatsApp +91 98471 61135.'); });
+        .catch(function () { btn.disabled = false; alert('That didn’t go through. Please email ' + EMAIL + '.'); });
     });
     document.getElementById('again').addEventListener('click', function () {
       form.reset(); btn.disabled = false; sent.hidden = true; form.hidden = false;
+    });
+  }
+
+  /* ---------- copy email address ---------- */
+  function wireCopy() {
+    var b = document.getElementById('copy-email'), note = document.getElementById('copy-note');
+    if (!b || !note) return;
+    var timer;
+    b.addEventListener('click', function () {
+      function show(t) { note.textContent = t; clearTimeout(timer); timer = setTimeout(function () { note.textContent = ''; }, 2500); }
+      /* older browsers and some in-app webviews block the Clipboard API */
+      function legacy() {
+        var t = el('textarea', { readonly: '', style: 'position: fixed; opacity: 0;' });
+        t.value = EMAIL; document.body.appendChild(t); t.select();
+        var ok = false; try { ok = document.execCommand('copy'); } catch (err) {}
+        document.body.removeChild(t);
+        show(ok ? 'Copied' : 'Couldn’t copy');
+      }
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(EMAIL).then(function () { show('Copied'); }, legacy);
+      else legacy();
     });
   }
 
@@ -293,5 +322,6 @@
 
   renderWork();
   wireForm();
+  wireCopy();
   cube();
 })();
