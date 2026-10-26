@@ -101,6 +101,24 @@ html.xray #xray-panel{background:var(--bp)!important;border:1px solid var(--bp-a
 html.xray #xray-list .ok{color:#8FE3B0!important}
 html.xray #xray-list .no{color:#FF9B80!important}
 
+/* the footer's red pixel opens X-ray */
+.hd-px100{cursor:pointer}
+.hd-px100wrap:has(.hd-px100:hover) .hd-blink{animation:none;opacity:1}
+.hd-tip{position:absolute;left:100%;top:100%;transform:translate(-50%,10px);padding:4px 8px;border:1px solid #3A3833;background:var(--ink);font-family:var(--font-mono);font-size:11px;font-weight:400;line-height:1.4;letter-spacing:.04em;white-space:nowrap;color:#A39E94;opacity:0;pointer-events:none;transition:opacity .25s var(--ease)}
+.hd-px100wrap:has(.hd-px100:hover) .hd-tip{opacity:1}
+
+/* scanner sweep: the blueprint is revealed behind a line running down the page, and peeled back up */
+#hd-scan{position:fixed;left:0;right:0;height:2px;z-index:40;display:none;pointer-events:none;background:#7FB2FF;box-shadow:0 0 18px 4px rgba(127,178,255,.55);view-transition-name:hd-scan}
+#hd-scan.is-top{display:block;top:0}
+#hd-scan.is-bottom{display:block;top:calc(100% - 2px)}
+::view-transition-group(hd-scan){animation-duration:.9s;animation-timing-function:cubic-bezier(.65,0,.35,1)}
+::view-transition-old(hd-scan),::view-transition-new(hd-scan){animation:none}
+:is(html.scan-down,html.scan-up)::view-transition-old(root){animation:none}
+html.scan-down::view-transition-new(root){animation:hdScanDown .9s cubic-bezier(.65,0,.35,1) both;mix-blend-mode:normal}
+html.scan-up::view-transition-new(root){animation:hdScanUp .9s cubic-bezier(.65,0,.35,1) both;mix-blend-mode:normal}
+@keyframes hdScanDown{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0)}}
+@keyframes hdScanUp{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0)}}
+
 /* scroll cue: the arrow's pixels light up top to bottom, ending on the vermilion tip */
 @keyframes hdPix{0%,100%{opacity:.14}25%{opacity:1}55%{opacity:.14}}
 .hd-pix{animation:hdPix 1.8s var(--ease) infinite}
@@ -372,7 +390,10 @@ html.xray #xray-list .no{color:#FF9B80!important}
         </div>
       </div>
       <p class="rv" aria-hidden="true" style="margin: 64px 0 0; display: flex; align-items: center; gap: 0.18em; font-size: clamp(88px, 21vw, 300px); line-height: 0.8; font-weight: 600; letter-spacing: -0.065em; color: var(--surface);">
-        <svg viewBox="0 0 96 96" style="width: 0.62em; height: 0.62em; flex: none;"><defs><pattern id="hd-px-giant" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#EEEBE4"></rect></pattern></defs><rect width="96" height="96" fill="url(#hd-px-giant)"></rect><rect x="90" y="90" width="6" height="6" style="fill: var(--ink);"></rect><rect class="hd-blink" x="90" y="90" width="6" height="6" fill="#FF5A2E"></rect></svg>
+        <span class="hd-px100wrap" style="position: relative; display: inline-flex; flex: none;">
+          <svg viewBox="0 0 96 96" style="width: 0.62em; height: 0.62em; flex: none;"><defs><pattern id="hd-px-giant" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#EEEBE4"></rect></pattern></defs><rect width="96" height="96" fill="url(#hd-px-giant)"></rect><rect x="90" y="90" width="6" height="6" style="fill: var(--ink);"></rect><rect class="hd-blink" x="90" y="90" width="6" height="6" fill="#FF5A2E"></rect><rect id="px100" class="hd-px100" x="72" y="72" width="24" height="24" fill="transparent"></rect></svg>
+          <span class="hd-tip">The hundredth detail. Click it.</span>
+        </span>
         <span>hundrd</span>
       </p>
       <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #3A3833; display: flex; justify-content: space-between; align-items: center; gap: 12px 24px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 12px; color: #A39E94;">
@@ -394,6 +415,7 @@ html.xray #xray-list .no{color:#FF9B80!important}
   </aside>
 
 </div>
+<i id="hd-scan" aria-hidden="true"></i>
 <script src="main.js" defer></script>
 </body>
 </html>

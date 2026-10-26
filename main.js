@@ -230,15 +230,47 @@
       panel.hidden = !on;
       if (on) check();
     }
-    btn.addEventListener('click', function () { set(btn.getAttribute('aria-pressed') !== 'true'); });
-    document.getElementById('xray-close').addEventListener('click', function () { set(false); btn.focus(); });
-    var wheel = document.getElementById('wheel');
+    function isOn() { return btn.getAttribute('aria-pressed') === 'true'; }
+    /* switch with the scanner sweep: a line runs down revealing the blueprint, or back up peeling it off.
+       Browsers without view transitions, and reduced motion, just switch. */
+    var scan = document.getElementById('hd-scan');
+    function swap(on) {
+      if (on === isOn()) return;
+      if (reduce || !document.startViewTransition || !scan) { set(on); return; }
+      var root = document.documentElement;
+      root.classList.add(on ? 'scan-down' : 'scan-up');
+      scan.className = on ? 'is-top' : 'is-bottom';
+      var vt = document.startViewTransition(function () { set(on); scan.className = on ? 'is-bottom' : 'is-top'; });
+      vt.finished.finally(function () { root.classList.remove('scan-down', 'scan-up'); scan.className = ''; });
+    }
+    btn.addEventListener('click', function () { swap(!isOn()); });
+    document.getElementById('xray-close').addEventListener('click', function () { swap(false); btn.focus(); });
+    var px = document.getElementById('px100');
+    if (px) px.addEventListener('click', function () { swap(!isOn()); });
+    var wheel = document.getElementById('wheel'), typed = '';
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !panel.hidden && !(wheel && wheel.classList.contains('is-open'))) set(false);
+      if (e.key === 'Escape' && !panel.hidden && !(wheel && wheel.classList.contains('is-open'))) { swap(false); return; }
+      /* typing "xray" anywhere outside a form field */
+      if (e.metaKey || e.ctrlKey || e.altKey || e.key.length !== 1) return;
+      if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+      typed = (typed + e.key.toLowerCase()).slice(-4);
+      if (typed === 'xray') { typed = ''; swap(!isOn()); }
     });
     /* hundrd.studio/#xray opens straight into it, for sharing */
     if (location.hash === '#xray') set(true);
-    window.addEventListener('hashchange', function () { if (location.hash === '#xray') set(true); });
+    window.addEventListener('hashchange', function () { if (location.hash === '#xray') swap(true); });
+
+    /* a note for whoever opens the console; typing xray there works too */
+    var mono = 'font: 12px ui-monospace, monospace; color: #8A857C;';
+    console.log('%chundrd%c\nBuilt by hand, down to the hundredth detail.\nType %cxray%c to see inside.',
+      'font: 600 20px system-ui, sans-serif; color: #151412; background: #F5F3EE; padding: 4px 10px; border-left: 4px solid #FF4A1C;',
+      mono, mono + ' color: #FF4A1C; font-weight: 600;', mono);
+    try {
+      Object.defineProperty(window, 'xray', { configurable: true, get: function () {
+        var on = !isOn(); swap(on);
+        return on ? 'X-ray on. Type xray again to switch it off.' : 'X-ray off.';
+      } });
+    } catch (err) {}
   }
 
   /* ---------- hero cube ---------- */
