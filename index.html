@@ -78,6 +78,9 @@ a:hover{color:var(--signal-ink)}
 .hd-wheel a::before{content:"";width:6px;height:6px;background:var(--signal);transform:scale(0);transition:transform .3s var(--ease)}
 .hd-wheel a.is-on{color:var(--ink)}
 .hd-wheel a.is-on::before{transform:scale(1)}
+.hd-wheel a.hd-cta{color:var(--signal-ink);transition:color .3s var(--ease),background-color .3s var(--ease)}
+.hd-wheel a.hd-cta::before{display:none}
+.hd-wheel a.hd-cta.is-on{background:var(--signal);color:var(--on-signal)}
 .hd-wheel a:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
 
 /* X-ray: a blueprint view of the page, with notes on how each part is built */

@@ -280,7 +280,7 @@
     var SPEED = 1, WAVE = 0.5, N = 200;
     var D = 34, K = 0.86 * N * D / 17.3, h = 0.3;
     var m = { yawOff: 0, pitOff: 0, vYaw: 0, vPit: 0, hx: 0, hy: 0, tx: 0, ty: 0, drag: false, moved: 0, lx: 0, ly: 0, introAt: performance.now(),
-      open: 0, openT: 0, hl: -1, hk: [0, 0, 0, 0, 0] };
+      open: 0, openT: 0, hl: -1, hk: [0, 0, 0, 0, 0, 0] }; /* one per arc, plus the red centre (index SEC) */
 
     /* section wheel: clicking the cube opens it into a ring of five arcs, one per section,
        clockwise from the top. Real links sit over the canvas for keyboard and screen readers. */
@@ -296,6 +296,14 @@
       a.addEventListener('focus', function () { highlight(s); });
       links.push(wheel.appendChild(a));
     });
+    /* the red pixel in the centre is the call to action */
+    if (wheel) {
+      var cta = el('a', { href: '#contact', class: 'hd-cta', text: 'Start a project →' });
+      cta.style.left = '50%';
+      cta.style.top = (50 + 1.9 * unit * 100) + '%';
+      cta.addEventListener('focus', function () { highlight(SEC); });
+      links.push(wheel.appendChild(cta));
+    }
     function highlight(s) {
       m.hl = s;
       links.forEach(function (a, i) { a.classList.toggle('is-on', i === s); });
@@ -309,12 +317,13 @@
       if (!o) highlight(-1);
       kick();
     }
-    /* which arc a pointer is over, or -1 for the hollow centre and outside the ring */
+    /* which arc a pointer is over: SEC for the red centre, -1 outside the ring */
     function sectorAt(e) {
       var r = wheel.getBoundingClientRect();
       var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
       var dist = Math.sqrt(dx * dx + dy * dy) / (r.width * unit);
-      if (dist < 2.2 || dist > 10.5) return -1;
+      if (dist > 10.5) return -1;
+      if (dist < 2.2) return SEC;
       var s = Math.round((Math.PI / 2 - Math.atan2(-dy, dx)) / STEP);
       return ((s % SEC) + SEC) % SEC;
     }
@@ -332,8 +341,8 @@
       wheel.addEventListener('keydown', function (e) {
         var i = links.indexOf(document.activeElement);
         if (e.key === 'Escape') { e.preventDefault(); setOpen(false); cv.focus(); }
-        else if (i >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) { e.preventDefault(); links[(i + 1) % SEC].focus(); }
-        else if (i >= 0 && (e.key === 'ArrowLeft' || e.key === 'ArrowUp')) { e.preventDefault(); links[(i + SEC - 1) % SEC].focus(); }
+        else if (i >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) { e.preventDefault(); links[(i + 1) % links.length].focus(); }
+        else if (i >= 0 && (e.key === 'ArrowLeft' || e.key === 'ArrowUp')) { e.preventDefault(); links[(i + links.length - 1) % links.length].focus(); }
       });
       wheel.addEventListener('focusout', function (e) { if (!wheel.contains(e.relatedTarget) && e.relatedTarget !== cv) setOpen(false); });
       document.addEventListener('pointerdown', function (e) { if (!wrap.contains(e.target)) setOpen(false); });
@@ -406,7 +415,7 @@
       if (reduce) m.open = m.openT;
       else m.open += Math.max(-dt / 0.7, Math.min(dt / 0.7, m.openT - m.open));
       var hkBusy = false;
-      for (var hs = 0; hs < SEC; hs++) {
+      for (var hs = 0; hs <= SEC; hs++) {
         var hkT = hs === m.hl ? 1 : 0;
         m.hk[hs] = reduce ? hkT : m.hk[hs] + (hkT - m.hk[hs]) * Math.min(1, dt * 12);
         if (Math.abs(hkT - m.hk[hs]) > 0.002) hkBusy = true;
@@ -442,7 +451,7 @@
         var hv = vx.sig ? 0 : m.hk[vx.sec], hh = h;
         if (eo > 0) {
           var T;
-          if (vx.sig) { T = [sigX, sigY, 2]; hh = h * (1 + eo * 0.8); }
+          if (vx.sig) { T = [sigX, sigY, 2]; hh = h * (1 + eo * (0.8 + m.hk[SEC] * 1.2)); }
           else {
             var rr = vx.rr * (1 + (push - 1) * 0.5) + hv * 0.7;
             T = [rr * Math.cos(vx.ra), rr * Math.sin(vx.ra), vx.rz];
