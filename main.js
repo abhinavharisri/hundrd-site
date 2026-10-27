@@ -127,9 +127,12 @@
       if (!FORM_ENDPOINT) {
         /* mailto alone does nothing on machines without a mail app set up (common on
            Windows and phones), so offer Gmail in the browser alongside it */
-        var subject = 'Website enquiry from ' + d.get('name') + (d.get('company') ? ', ' + d.get('company') : '');
+        var purposes = d.getAll('purpose');
+        var subject = 'Enquiry from ' + d.get('name') + (d.get('company') ? ', ' + d.get('company') : '') +
+          (purposes.length ? ' · ' + purposes.join(', ') : '');
         var body = 'Hi hundrd, I’m ' + d.get('name') + (d.get('company') ? ' from ' + d.get('company') : '') + '.\n\n' +
-          (d.get('message') || 'I’d like to talk about a website.') + '\n\nReply to: ' + d.get('email');
+          (purposes.length ? 'Looking for: ' + purposes.join(', ') + '\n\n' : '') +
+          (d.get('message') || 'I’d like to talk about a project.') + '\n\nReply to: ' + d.get('email');
         document.getElementById('sent-gmail').href = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + EMAIL +
           '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
         document.getElementById('sent-mailto').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);

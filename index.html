@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>hundrd — web studio, Bengaluru</title>
-<meta name="description" content="hundrd is a web studio in Bengaluru building fast, secure websites for businesses that operate at scale. Designed, built and hosted by one studio.">
+<title>hundrd — digital studio, Bengaluru</title>
+<meta name="description" content="hundrd is a digital studio in Bengaluru building fast, secure websites and AI &amp; data tools for businesses that operate at scale.">
 <meta name="theme-color" content="#F5F3EE">
 <link rel="canonical" href="https://hundrd.studio/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hundrd.studio/">
-<meta property="og:title" content="hundrd — web studio, Bengaluru">
-<meta property="og:description" content="Fast, secure websites for businesses that operate at scale, down to the hundredth detail.">
+<meta property="og:title" content="hundrd — digital studio, Bengaluru">
+<meta property="og:description" content="Fast, secure websites and AI &amp; data tools, down to the hundredth detail.">
 <meta property="og:image" content="https://hundrd.studio/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -168,6 +168,16 @@ html.scan-up::view-transition-new(root){animation:hdScanUp .9s cubic-bezier(.65,
 .hd-field:hover{border-color:#B9B4AA}
 .hd-field:focus{border-color:var(--ink)}
 .hd-field::placeholder{color:#8A857C}
+/* purpose picker: checkboxes styled as toggle chips */
+.hd-chips{display:flex;flex-wrap:wrap;gap:8px}
+.hd-pick{position:relative;display:inline-flex}
+.hd-pick input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.hd-pick span{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 12px;border:1px solid var(--line);background:var(--surface-raised);font-size:14px;color:var(--ink);transition:border-color .3s var(--ease),background-color .3s var(--ease),color .3s var(--ease)}
+.hd-pick span::before{content:"";width:8px;height:8px;border:1px solid var(--ink-muted);transition:background-color .3s var(--ease),border-color .3s var(--ease)}
+.hd-pick:hover span{border-color:#B9B4AA}
+.hd-pick input:checked+span{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.hd-pick input:checked+span::before{background:var(--signal);border-color:var(--signal)}
+.hd-pick input:focus-visible+span{outline:2px solid var(--signal);outline-offset:2px}
 [hidden]{display:none!important}
 .hd-ok{animation:hdUp .7s var(--ease) both}
 
@@ -210,9 +220,9 @@ html.scan-up::view-transition-new(root){animation:hdScanUp .9s cubic-bezier(.65,
         <nav id="wheel" class="hd-wheel" aria-label="Sections"></nav>
       </div>
       <p class="hd-in" style="margin: 4px 0 0; animation-delay: 1.4s; font-family: var(--font-mono); font-size: 11px; line-height: 16px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Drag to spin · Click to explore</p>
-      <p class="hd-in" style="margin: 36px 0 0; animation-delay: 0.2s; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Web studio · Bengaluru · 100% or nothing</p>
+      <p class="hd-in" style="margin: 36px 0 0; animation-delay: 0.2s; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Digital studio · Bengaluru · 100% or nothing</p>
       <h1 id="hero-title" style="margin: 16px 0 0; overflow: hidden; padding-bottom: 0.06em; font-size: clamp(64px, 11vw, 140px); line-height: 0.92; font-weight: 500; letter-spacing: -0.055em;"><span class="hd-clip" style="animation-delay: 0.35s;">hundrd<span class="hd-blink" style="color: var(--signal);">.</span></span></h1>
-      <p class="hd-in" style="margin: 28px 0 0; animation-delay: 0.7s; max-width: 560px; font-size: 20px; line-height: 1.5; color: var(--ink-muted);">Fast, secure websites for businesses that operate at scale. Designed, built and hosted by one studio, down to the hundredth detail.</p>
+      <p class="hd-in" style="margin: 28px 0 0; animation-delay: 0.7s; max-width: 560px; font-size: 20px; line-height: 1.5; color: var(--ink-muted);">Fast, secure websites and AI &amp; data tools for businesses that operate at scale. Designed, built and hosted by one small studio, down to the hundredth detail.</p>
       <div class="hd-in" style="margin-top: 40px; animation-delay: 0.9s; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
         <a class="hd-btn" href="#contact" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 24px; background: var(--signal); border: 1px solid var(--signal); color: var(--on-signal); border-radius: 2px; font-size: 16px; font-weight: 500;">Start a project <span class="hd-arr" style="font-family: var(--font-mono);">→</span></a>
         <a class="hd-btn" href="#work" style="display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 24px; background: transparent; border: 1px solid var(--ink); color: var(--ink); border-radius: 2px; font-size: 16px; font-weight: 500;">See the work <span class="hd-arr" style="font-family: var(--font-mono);">↓</span></a>
@@ -259,7 +269,7 @@ html.scan-up::view-transition-new(root){animation:hdScanUp .9s cubic-bezier(.65,
           <p style="margin: 0; font-family: var(--font-mono); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #A39E94;">02 / Services</p>
           <h2 id="services-title" style="margin: 12px 0 0; max-width: 760px; font-size: clamp(36px, 5vw, 56px); line-height: 1; font-weight: 500; letter-spacing: -0.035em;">One studio, from the first sketch to the server.</h2>
         </div>
-        <div style="margin-top: 64px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); border-top: 1px solid #3A3833;">
+        <div style="margin-top: 64px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); border-top: 1px solid #3A3833;">
           <div class="hd-svc rv" style="padding: 28px 24px 32px 16px; border-bottom: 1px solid #3A3833;">
             <p style="margin: 0; font-family: var(--font-mono); font-size: 13px; color: #FF7D57;">01</p>
             <h3 style="margin: 16px 0 0; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -0.015em;">Design &amp; build</h3>
@@ -279,6 +289,12 @@ html.scan-up::view-transition-new(root){animation:hdScanUp .9s cubic-bezier(.65,
             <p style="margin: 0; font-family: var(--font-mono); font-size: 13px; color: #FF7D57;">04</p>
             <h3 style="margin: 16px 0 0; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -0.015em;">Care &amp; print</h3>
             <p style="margin: 10px 0 0; font-size: 15px; line-height: 1.6; color: #A39E94;">Ongoing updates after launch, plus print pieces that match the site.</p>
+          </div>
+          <div class="hd-svc rv" style="padding: 28px 24px 32px 16px; border-bottom: 1px solid #3A3833;">
+            <p style="margin: 0; font-family: var(--font-mono); font-size: 13px; color: #FF7D57;">05</p>
+            <h3 style="margin: 16px 0 0; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -0.015em;">AI &amp; data tools</h3>
+            <p style="margin: 10px 0 0; font-size: 15px; line-height: 1.6; color: #A39E94;">Web tools built on your own data: dashboards, forecasts and machine learning, tested and explained.</p>
+            <p style="margin: 14px 0 0; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #A39E94;">With <a class="hd-link" href="https://www.linkedin.com/in/deekshith-p-863a25296/" target="_blank" rel="noopener" style="color: var(--surface);">Deekshith P ↗</a></p>
           </div>
         </div>
       </div>
@@ -329,6 +345,7 @@ html.scan-up::view-transition-new(root){animation:hdScanUp .9s cubic-bezier(.65,
         <div class="rv">
           <p style="margin: 0; font-size: 24px; line-height: 1.4; letter-spacing: -0.015em;">hundrd is run by <a href="https://abhinavharisri.github.io/" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; text-decoration-color: var(--ink-muted);">Abhinav Harisri</a>, with one simple goal: websites that stand comfortably next to work from much bigger studios.</p>
           <p style="margin: 20px 0 0; font-size: 16px; line-height: 1.6; color: var(--ink-muted);">Every site is built like a vault: beautiful on the outside, engineered so nothing gets in. One person writes every line, ships every deploy and answers every message, with the same obsessive care on the hundredth detail as on the first.</p>
+          <p style="margin: 12px 0 0; font-size: 16px; line-height: 1.6; color: var(--ink-muted);">AI and data tools are built with <a href="https://www.linkedin.com/in/deekshith-p-863a25296/" target="_blank" rel="noopener" style="color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; text-decoration-color: var(--ink-muted);">Deekshith P</a>, a data scientist who turns business data into web tools people actually use: dashboards, forecasts and models you can trust.</p>
           <ul style="margin: 32px 0 0; padding: 20px 0 0; list-style: none; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 14px 36px;">
             <li style="display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;"><span aria-hidden="true" style="width: 8px; height: 8px; background: var(--signal); flex: none;"></span>No templates</li>
             <li style="display: flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;"><span aria-hidden="true" style="width: 8px; height: 8px; background: var(--signal); flex: none;"></span>No hand-offs</li>
@@ -352,6 +369,13 @@ html.scan-up::view-transition-new(root){animation:hdScanUp .9s cubic-bezier(.65,
               <span id="copy-note" role="status" style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ok);"></span>
             </div>
             <a class="hd-link" href="https://linkedin.com/in/abhinav-h-897152250" target="_blank" rel="noopener" style="display: inline-flex; gap: 10px; align-items: baseline; align-self: flex-start;"><span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px;">LinkedIn</span>Abhinav H</a>
+            <div style="display: flex; gap: 10px; align-items: baseline;">
+              <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); width: 80px; flex: none;">AI &amp; data</span>
+              <span style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; min-width: 0;">
+                <a class="hd-link" href="https://www.linkedin.com/in/deekshith-p-863a25296/" target="_blank" rel="noopener">Deekshith P ↗</a>
+                <a class="hd-link" href="mailto:deekshith3346@gmail.com" target="_blank" rel="noopener" style="font-size: 15px; color: var(--ink-muted);">deekshith3346@gmail.com</a>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -362,7 +386,22 @@ html.scan-up::view-transition-new(root){animation:hdScanUp .9s cubic-bezier(.65,
             <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Company<input class="hd-field" type="text" name="company" placeholder="Business name"></label>
           </div>
           <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Email<input class="hd-field" type="email" name="email" required="" placeholder="you@company.com"></label>
-          <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">What do you need?<textarea class="hd-field" name="message" rows="5" placeholder="A new site, a redesign, hosting…" style="resize: vertical;"></textarea></label>
+          <fieldset style="margin: 0; padding: 0; border: 0; min-width: 0;">
+            <legend style="padding: 0; margin-bottom: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">What’s it for? <span style="text-transform: none; letter-spacing: 0;">Pick any</span></legend>
+            <div class="hd-chips">
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="New website"><span>New website</span></label>
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="Redesign"><span>Redesign</span></label>
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="Hosting &amp; care"><span>Hosting &amp; care</span></label>
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="Security check"><span>Security check</span></label>
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="Data analysis"><span>Data analysis</span></label>
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="Dashboard"><span>Dashboard</span></label>
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="Forecasting"><span>Forecasting</span></label>
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="ML model"><span>ML model</span></label>
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="Fraud &amp; risk"><span>Fraud &amp; risk</span></label>
+              <label class="hd-pick"><input type="checkbox" name="purpose" value="Not sure yet"><span>Not sure yet</span></label>
+            </div>
+          </fieldset>
+          <label style="display: flex; flex-direction: column; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);">Tell us more<textarea class="hd-field" name="message" rows="5" placeholder="What you have now, what you want, timeline, links…" style="resize: vertical;"></textarea></label>
           <button class="hd-btn" type="submit" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; height: 48px; padding: 0 24px; background: var(--signal); border: 1px solid var(--signal); color: var(--on-signal); border-radius: 2px; font: inherit; font-size: 16px; font-weight: 500; cursor: pointer;">Send enquiry <span class="hd-arr" style="font-family: var(--font-mono);">→</span></button>
         </form>
           <div id="sent" class="hd-ok" role="status" hidden style="background: var(--surface-raised); border: 1px solid var(--line); padding: 32px; display: flex; flex-direction: column; gap: 12px; justify-content: center;">
